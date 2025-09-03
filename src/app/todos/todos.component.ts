@@ -17,10 +17,19 @@ export class TodosComponent implements OnInit {
 
   ngOnInit(): void {
     this.listTodos();
+    this.getData();
   }
 
   deleteTodo(id: string) {
     client.models.Todo.delete({ id });
+  }
+
+  getData() {
+    client.models.Todo.list({
+      filter: { content: { eq: 'aaa' } },
+    }).then((aaa) => {
+      console.log('Todos with content "aaa":', aaa);
+    });
   }
 
   listTodos() {
@@ -33,6 +42,12 @@ export class TodosComponent implements OnInit {
     } catch (error) {
       console.error('error fetching todos', error);
     }
+
+    client.models.Todo.onCreate().subscribe({
+      next: (todo: any) => {
+        console.log('New todo created:', todo);
+      },
+    });
   }
 
   createTodo() {
